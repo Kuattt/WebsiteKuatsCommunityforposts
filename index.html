@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuats Community</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+
+    <header class="topbar">
+      <a class="brand" href="#home">
+        <span class="brand-mark">K</span>
+        <span>
+          <strong>Kuats Community</strong>
+          <small>News, projects, notes, announcements</small>
+        </span>
+      </a>
+
+      <nav class="topbar-actions">
+        <button class="ghost-button" id="openLogin">Login</button>
+        <div class="user-controls hidden" id="userControls">
+          <button class="ghost-button" id="profileButton" type="button">Your Profile</button>
+          <button class="primary-button" id="topLogoutButton" type="button">Log out</button>
+        </div>
+      </nav>
+    </header>
+
+    <main>
+      <section class="hero" id="home">
+        <div class="hero-copy reveal">
+          <p class="eyebrow">Community homebase</p>
+          <h1>One beautiful place for Kuat's updates, project drops, and community discussions.</h1>
+          <p class="hero-text">
+            Explore the latest notes, preview projects, read announcements, and join the forum.
+            Accounts are optional for browsing, while the leader account unlocks publishing tools.
+          </p>
+          <div class="hero-actions">
+            <a class="primary-button" href="#forum">Open Forum</a>
+            <a class="ghost-button" href="#resources">View Downloads</a>
+            <button class="ghost-button" id="contactButton" type="button">Contact</button>
+            <a class="ghost-button" href="https://discord.gg/VGyRxS9A" target="_blank" rel="noreferrer">Our Community</a>
+          </div>
+        </div>
+
+        <aside class="hero-panel reveal delay-1">
+          <div class="hero-card floating-card">
+            <div class="status-pill">
+              <span class="status-dot"></span>
+              Live community board
+            </div>
+            <div class="stats-grid">
+              <article>
+                <strong id="statUsers">1</strong>
+                <span>Leader access ready</span>
+              </article>
+              <article>
+                <strong id="statPosts">0</strong>
+                <span>Forum project posts</span>
+              </article>
+              <article>
+                <strong id="statFiles">0</strong>
+                <span>Downloadable resources</span>
+              </article>
+            </div>
+            <div class="session-card" id="sessionSummary">
+              <p>Welcome to Kuats Community</p>
+              <strong>Stay close to every new release, note, and project drop</strong>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="content-grid">
+        <article class="panel wide reveal">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Updates</p>
+              <h2>Stay connected with Kuat</h2>
+            </div>
+          </div>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h3>Fresh updates</h3>
+              <p>Follow Kuat's latest news, release notes, progress updates, and important announcements in one place.</p>
+            </div>
+            <div class="feature-card">
+              <h3>Projects and ideas</h3>
+              <p>Explore current projects, read descriptions, and keep up with what is being built for the community.</p>
+            </div>
+            <div class="feature-card">
+              <h3>Download center</h3>
+              <p>Grab releases, documents, and other shared files whenever something new is posted.</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel reveal delay-1">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Community</p>
+              <h2>Why join Kuats Community</h2>
+            </div>
+          </div>
+          <div class="role-list">
+            <div class="role-card">
+              <strong>Follow the journey</strong>
+              <p>See what Kuat is building, what is changing, and what is coming next.</p>
+            </div>
+            <div class="role-card">
+              <strong>Catch every release</strong>
+              <p>Check project updates, announcements, and new shared files without missing a drop.</p>
+            </div>
+            <div class="role-card leader-card">
+              <strong>Built to grow</strong>
+              <p>This space is ready for future posts, uploads, project pages, and more community content.</p>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel section reveal" id="forum">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Forum</p>
+            <h2>Kuat's project board</h2>
+          </div>
+          <span class="section-note">A place for project updates, notes, and fresh releases.</span>
+        </div>
+        <div class="forum-grid" id="forumList"></div>
+      </section>
+
+      <section class="panel section reveal delay-1" id="favorites">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Favorites</p>
+            <h2>Saved favorite posts</h2>
+          </div>
+          <span class="section-note">Posts you marked as favorite will appear here.</span>
+        </div>
+        <div class="forum-grid" id="favoriteList"></div>
+      </section>
+
+      <section class="panel section reveal delay-1" id="resources">
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">Downloads</p>
+            <h2>Files and releases</h2>
+          </div>
+          <span class="section-note">Download the latest files shared by Kuat.</span>
+        </div>
+        <div class="resources-grid" id="resourceList"></div>
+      </section>
+
+      <section class="leader-section hidden" id="leaderPanel">
+        <div class="leader-banner reveal">
+          <div>
+            <p class="eyebrow">Leader mode</p>
+            <h2>Publishing dashboard</h2>
+            <p>Publish new projects, upload files, and keep Kuats Community updated.</p>
+          </div>
+          <button class="ghost-button leader-logout" id="logoutButton">Logout</button>
+        </div>
+
+        <div class="leader-tools">
+          <article class="panel reveal">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Publish</p>
+                <h3>Create forum project</h3>
+              </div>
+            </div>
+            <form class="stack-form" id="postForm">
+              <input type="hidden" name="postId">
+              <label>
+                Project title
+                <input type="text" name="title" placeholder="New project name" required>
+              </label>
+              <label>
+                Description
+                <textarea name="description" rows="5" placeholder="What should people know?" required></textarea>
+              </label>
+              <label>
+                Tags
+                <input type="text" name="tags" placeholder="game, release, patch notes">
+              </label>
+              <div class="form-actions">
+                <button class="primary-button" id="postSubmitButton" type="submit">Publish Project</button>
+                <button class="ghost-button hidden" id="postCancelButton" type="button">Cancel Edit</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="panel reveal delay-1">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Upload</p>
+                <h3>Add downloadable file</h3>
+              </div>
+            </div>
+            <form class="stack-form" id="resourceForm">
+              <input type="hidden" name="resourceId">
+              <label>
+                Resource name
+                <input type="text" name="title" placeholder="Windows build v1" required>
+              </label>
+              <label>
+                Description
+                <textarea name="description" rows="4" placeholder="Short note about this file" required></textarea>
+              </label>
+              <label>
+                Select file
+                <div class="file-picker">
+                  <input type="file" name="file" id="resourceFileInput" class="native-file-input">
+                  <label for="resourceFileInput" class="ghost-button file-trigger">Choose file</label>
+                  <span class="file-name" id="resourceFileName">No file selected</span>
+                </div>
+              </label>
+              <div class="form-actions">
+                <button class="primary-button" id="resourceSubmitButton" type="submit">Upload Resource</button>
+                <button class="ghost-button hidden" id="resourceCancelButton" type="button">Cancel Edit</button>
+              </div>
+            </form>
+          </article>
+
+          <article class="panel reveal delay-2">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Access</p>
+                <h3>Leader account</h3>
+              </div>
+            </div>
+            <div class="accounts-list" id="accountList"></div>
+          </article>
+
+          <article class="panel reveal delay-2">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">Backup</p>
+                <h3>Save your published data</h3>
+              </div>
+            </div>
+            <div class="stack-form">
+              <p class="section-note">Export your posts, files, and accounts to a JSON backup, then import it later if needed.</p>
+              <button class="ghost-button" id="exportDataButton" type="button">Export Backup JSON</button>
+              <label>
+                Import backup JSON
+                <div class="file-picker">
+                  <input type="file" id="importDataInput" class="native-file-input" accept=".json,application/json">
+                  <label for="importDataInput" class="ghost-button file-trigger">Choose backup</label>
+                  <span class="file-name" id="importFileName">No file selected</span>
+                </div>
+              </label>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal hidden" id="authModal" aria-hidden="true">
+    <div class="modal-backdrop" data-close-modal="true"></div>
+    <div class="modal-card">
+      <button class="close-button" id="closeModal" aria-label="Close modal">x</button>
+      <p class="eyebrow" id="modalEyebrow">Register</p>
+      <h2 id="modalTitle">Create account</h2>
+      <p class="modal-copy" id="modalCopy">Join Kuats Community to keep up with projects, updates, and releases.</p>
+      <form class="stack-form" id="authForm">
+        <label>
+          Email
+          <input type="email" name="email" placeholder="name@example.com" required>
+        </label>
+        <label>
+          Password
+          <input type="password" name="password" placeholder="Minimum 8 characters" minlength="8" required>
+        </label>
+        <button class="primary-button" id="authSubmit" type="submit">Login</button>
+      </form>
+      <p class="helper-text" id="authStatus"></p>
+      <div class="profile-card hidden" id="profileCard">
+        <strong id="profileEmail"></strong>
+        <p id="profileRole"></p>
+        <p>Password: ............</p>
+      </div>
+    </div>
+  </div>
+
+  <template id="emptyStateTemplate">
+    <article class="empty-state">
+      <h3>Nothing here yet</h3>
+      <p>New updates and project posts will appear here soon.</p>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
