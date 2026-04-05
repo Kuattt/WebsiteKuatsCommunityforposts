@@ -306,6 +306,29 @@ body.leader-mode .stack-form input:focus, body.leader-mode .stack-form textarea:
   border-color: rgba(255, 143, 90, 0.42);
 }
 
+.search-bar {
+  margin-top: 1rem;
+}
+
+.search-bar input {
+  width: 100%;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background: rgba(0, 0, 0, 0.18);
+  color: var(--text);
+  padding: 1rem 1.05rem;
+}
+
+.search-bar input:focus {
+  outline: 2px solid rgba(92, 225, 182, 0.25);
+  border-color: rgba(92, 225, 182, 0.42);
+}
+
+body.leader-mode .search-bar input:focus {
+  outline-color: rgba(255, 143, 90, 0.25);
+  border-color: rgba(255, 143, 90, 0.42);
+}
+
 .file-picker {
   display: flex;
   align-items: center;

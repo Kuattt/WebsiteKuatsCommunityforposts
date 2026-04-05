@@ -18,6 +18,8 @@ const state = {
   editingResourceId: null,
   favorites: [],
   likes: [],
+  forumSearch: "",
+  resourceSearch: "",
 };
 
 const elements = {
@@ -33,6 +35,8 @@ const elements = {
   profileEmail: document.getElementById("profileEmail"),
   profileRole: document.getElementById("profileRole"),
   favoriteList: document.getElementById("favoriteList"),
+  forumSearchInput: document.getElementById("forumSearchInput"),
+  resourceSearchInput: document.getElementById("resourceSearchInput"),
   sessionSummary: document.getElementById("sessionSummary"),
   forumList: document.getElementById("forumList"),
   resourceList: document.getElementById("resourceList"),
@@ -67,6 +71,8 @@ elements.authForm.addEventListener("submit", handleAuthSubmit);
 elements.postForm.addEventListener("submit", handlePostSubmit);
 elements.resourceForm.addEventListener("submit", handleResourceSubmit);
 elements.resourceFileInput.addEventListener("change", updateSelectedFileName);
+elements.forumSearchInput.addEventListener("input", handleForumSearch);
+elements.resourceSearchInput.addEventListener("input", handleResourceSearch);
 elements.postCancelButton.addEventListener("click", resetPostForm);
 elements.resourceCancelButton.addEventListener("click", resetResourceForm);
 elements.exportDataButton.addEventListener("click", exportBackupData);
@@ -398,13 +404,14 @@ function renderForum() {
   const currentUser = getCurrentUser();
   const isLeader = currentUser?.role === "leader";
 
-  if (!state.db.posts.length) {
+  const filteredPosts = sortPosts(state.db.posts).filter(matchesForumSearch);
+
+  if (!filteredPosts.length) {
     elements.forumList.appendChild(createEmptyState());
     return;
   }
 
-  const sortedPosts = sortPosts(state.db.posts);
-  for (const post of sortedPosts) {
+  for (const post of filteredPosts) {
     elements.forumList.appendChild(createPostCard(post, isLeader));
   }
 }
@@ -413,7 +420,11 @@ function renderFavorites() {
   elements.favoriteList.innerHTML = "";
   const currentUser = getCurrentUser();
   const isLeader = currentUser?.role === "leader";
-  const favoritePosts = sortPosts(state.db.posts.filter((post) => state.favorites.includes(post.id)));
+  const favoritePosts = sortPosts(
+    state.db.posts
+      .filter((post) => state.favorites.includes(post.id))
+      .filter(matchesForumSearch)
+  );
 
   if (!favoritePosts.length) {
     elements.favoriteList.appendChild(createEmptyState());
@@ -430,13 +441,14 @@ function renderResources() {
   const currentUser = getCurrentUser();
   const isLeader = currentUser?.role === "leader";
 
-  if (!state.db.resources.length) {
+  const filteredResources = sortResources(state.db.resources).filter(matchesResourceSearch);
+
+  if (!filteredResources.length) {
     elements.resourceList.appendChild(createEmptyState());
     return;
   }
 
-  const sortedResources = [...state.db.resources].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
-  for (const resource of sortedResources) {
+  for (const resource of filteredResources) {
     const article = document.createElement("article");
     article.className = "resource-card";
 
@@ -676,6 +688,10 @@ function sortPosts(posts) {
     }
     return Date.parse(b.createdAt) - Date.parse(a.createdAt);
   });
+}
+
+function sortResources(resources) {
+  return [...resources].sort((a, b) => Date.parse(b.createdAt) - Date.parse(a.createdAt));
 }
 
 function startEditPost(postId) {
@@ -960,4 +976,43 @@ function updateSelectedFileName() {
 function updateImportFileName() {
   const file = elements.importDataInput.files?.[0];
   elements.importFileName.textContent = file ? file.name : "No file selected";
+}
+
+function handleForumSearch(event) {
+  state.forumSearch = event.target.value.trim().toLowerCase();
+  renderForum();
+  renderFavorites();
+}
+
+function handleResourceSearch(event) {
+  state.resourceSearch = event.target.value.trim().toLowerCase();
+  renderResources();
+}
+
+function matchesForumSearch(post) {
+  if (!state.forumSearch) {
+    return true;
+  }
+
+  const haystack = [
+    post.title,
+    post.description,
+    ...(post.tags || []),
+  ].join(" ").toLowerCase();
+
+  return haystack.includes(state.forumSearch);
+}
+
+function matchesResourceSearch(resource) {
+  if (!state.resourceSearch) {
+    return true;
+  }
+
+  const haystack = [
+    resource.title,
+    resource.description,
+    resource.fileName,
+  ].join(" ").toLowerCase();
+
+  return haystack.includes(state.resourceSearch);
 }
