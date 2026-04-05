@@ -2,6 +2,7 @@ const STORAGE_KEY = "kuats-community-db";
 const SESSION_KEY = "kuats-community-session";
 const FAVORITES_KEY = "kuats-community-favorites";
 const LIKES_KEY = "kuats-community-likes";
+const DB_VERSION = 1;
 const LEADER_EMAIL = "parpikuat@gmail.com";
 const LEADER_PASSWORD_RECORD = {
   algorithm: "PBKDF2-SHA-256",
@@ -98,6 +99,7 @@ async function init() {
 
 function defaultDb() {
   return {
+    version: DB_VERSION,
     users: [],
     posts: [],
     resources: [],
@@ -111,7 +113,8 @@ function loadDb() {
   }
 
   try {
-    return { ...defaultDb(), ...JSON.parse(raw) };
+    const parsed = JSON.parse(raw);
+    return migrateDb(parsed);
   } catch (error) {
     console.warn("Resetting invalid local database", error);
     return defaultDb();
@@ -119,6 +122,7 @@ function loadDb() {
 }
 
 function saveDb() {
+  state.db.version = DB_VERSION;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(state.db));
 }
 
@@ -185,6 +189,9 @@ function saveSession() {
 async function ensureLeaderAccount() {
   const existing = findUserByEmail(LEADER_EMAIL);
   if (existing) {
+    existing.role = "leader";
+    existing.password = existing.password || LEADER_PASSWORD_RECORD;
+    saveDb();
     return;
   }
 
@@ -196,6 +203,46 @@ async function ensureLeaderAccount() {
     password: LEADER_PASSWORD_RECORD,
   });
   saveDb();
+}
+
+function migrateDb(input) {
+  const base = defaultDb();
+  const next = {
+    version: typeof input?.version === "number" ? input.version : DB_VERSION,
+    users: Array.isArray(input?.users) ? input.users : [],
+    posts: Array.isArray(input?.posts) ? input.posts : [],
+    resources: Array.isArray(input?.resources) ? input.resources : [],
+  };
+
+  next.posts = next.posts.map((post) => ({
+    id: post.id || crypto.randomUUID(),
+    title: String(post.title || ""),
+    description: String(post.description || ""),
+    tags: Array.isArray(post.tags) ? post.tags : [],
+    pinned: Boolean(post.pinned),
+    likes: Number.isFinite(post.likes) ? post.likes : 0,
+    createdAt: post.createdAt || new Date().toISOString(),
+  }));
+
+  next.resources = next.resources.map((resource) => ({
+    id: resource.id || crypto.randomUUID(),
+    title: String(resource.title || ""),
+    description: String(resource.description || ""),
+    fileName: String(resource.fileName || ""),
+    fileType: String(resource.fileType || "application/octet-stream"),
+    fileDataUrl: String(resource.fileDataUrl || ""),
+    createdAt: resource.createdAt || new Date().toISOString(),
+  }));
+
+  next.users = next.users.map((user) => ({
+    id: user.id || crypto.randomUUID(),
+    email: String(user.email || ""),
+    role: user.role === "leader" ? "leader" : "member",
+    createdAt: user.createdAt || new Date().toISOString(),
+    password: user.password || LEADER_PASSWORD_RECORD,
+  }));
+
+  return { ...base, ...next };
 }
 
 function findUserByEmail(email) {
